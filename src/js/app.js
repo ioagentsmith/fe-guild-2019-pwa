@@ -83,12 +83,29 @@ window.addEventListener('load', () => {
     }
 });
 
-self.addEventListener('install', event => {
-    console.log('[Service Worker] Installing Service Worker ...', event);
-    event.waitUntil(self.skipWaiting());
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', event => {
+    // Determine the user's choice - returned as a Promise
+    event.userChoice.then(result => {
+        console.log(result.outcome);
+
+        // Based on the user's choice, decide how to proceed
+        if(result.outcome == 'dismissed') {
+            // Send to analytics
+        } else {
+            // Send to analytics
+        }
+    });
+
+    // Prevent Chrome 67 and earlier from automatically showing the prompt
+    event.preventDefault();
+
+    console.log('beforeinstallprompt fired');
+
+    // Stash the event so it can be triggered later.
+    deferredPrompt = event;
+
+    return false;
 });
 
-self.addEventListener('activate', event => {
-    console.log('[Service Worker] Activating Service Worker ...', event);
-    return self.clients.claim();
-});
